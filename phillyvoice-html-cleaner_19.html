@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhillyVoice HTML Cleaner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .editor-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .editor-section {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .editor-section h2 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .btn-copy {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #2196F3;
+            color: white;
+        }
+        
+        .btn-copy:hover {
+            background: #0b7dda;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 400px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        
+        #output {
+            background: #f9f9f9;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #45a049;
+        }
+        
+        .btn-secondary {
+            background: #2196F3;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #0b7dda;
+        }
+        
+        .btn-clear {
+            background: #f44336;
+            color: white;
+        }
+        
+        .btn-clear:hover {
+            background: #da190b;
+        }
+        
+        .status {
+            padding: 12px 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+        
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        
+        .info-box h3 {
+            color: #1976d2;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        .info-box ul {
+            margin-left: 20px;
+            color: #555;
+            font-size: 13px;
+        }
+        
+        .info-box li {
+            margin-bottom: 4px;
+        }
+        
+        .settings-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        
+        .settings-box h3 {
+            color: #856404;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        
+        .settings-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .settings-row label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            white-space: nowrap;
+        }
+        
+        .settings-row input[type="text"] {
+            flex: 1;
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .settings-row input[type="text"]:focus {
+            outline: none;
+            border-color: #ffc107;
+        }
+        
+        .btn-settings {
+            padding: 8px 16px;
+            background: #ffc107;
+            color: #333;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .btn-settings:hover {
+            background: #e0a800;
+        }
+        
+        .help-text {
+            font-size: 12px;
+            color: #856404;
+            margin: 0;
+            font-style: italic;
+        }
+        
+        .sheet-status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            display: none;
+        }
+        
+        .sheet-status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+        
+        .sheet-status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .editor-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PhillyVoice HTML Cleaner & Tag Linker</h1>
+        <p class="subtitle">Version 4.1 - Increased to 0-7 links + Fixed duplicate linking bug</p>
+        
+        <div class="info-box">
+            <h3>What This Tool Does:</h3>
+            <ul>
+                <li>Removes all &lt;span&gt; tags (keeps content)</li>
+                <li>Removes problematic &lt;div&gt; tags with no attributes</li>
+                <li>Fixes related link packages (detects &lt;hr&gt; pairs with &lt;150 chars containing links)</li>
+                <li>Extracts &lt;img&gt; tags from containing &lt;p&gt; and &lt;h3&gt; elements</li>
+                <li>Removes &lt;br&gt; tags after images</li>
+                <li>Removes empty &lt;p&gt; tags and &lt;p&gt; tags with only &lt;br&gt;</li>
+                <li>Removes specific inline style attributes from links</li>
+                <li>Converts smart/curly quotes to straight quotes</li>
+                <li>Normalizes em dash spacing (multiple spaces → single space)</li>
+                <li>Preserves all embed codes (YouTube, Instagram, Twitter, etc.)</li>
+                <li><strong>NEW:</strong> Adds links to tag pages based on your Google Sheet (0-7 links max, first mention only)</li>
+            </ul>
+        </div>
+        
+        <div class="settings-box">
+            <h3>⚙️ Tag Linking Settings</h3>
+            <div class="settings-row">
+                <label for="csvUrl">Google Sheet CSV URL:</label>
+                <input type="text" id="csvUrl" placeholder="https://docs.google.com/spreadsheets/.../pub?output=csv">
+                <button class="btn-settings" onclick="saveSettings()">Save URL</button>
+                <button class="btn-settings" onclick="testSheet()">Test Connection</button>
+            </div>
+            <p class="help-text">📋 To get CSV URL: File → Share → Publish to web → Select "CSV" → Copy link</p>
+            <div id="sheet-status" class="sheet-status"></div>
+        </div>
+        
+        <div id="status" class="status"></div>
+        
+        <div class="button-group">
+            <button class="btn-primary" onclick="cleanHTML()">Clean HTML</button>
+            <button class="btn-clear" onclick="clearAll()">Clear All</button>
+            <button class="btn-copy" onclick="copyToClipboard()">Copy to Clipboard</button>
+        </div>
+        
+        <div class="editor-container">
+            <div class="editor-section">
+                <h2>Input HTML (Paste Here)</h2>
+                <textarea id="input" placeholder="Paste your HTML code here..."></textarea>
+            </div>
+            <div class="editor-section">
+                <h2>Cleaned HTML (Output)</h2>
+                <textarea id="output" readonly placeholder="Cleaned HTML will appear here..."></textarea>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let tagData = [];
+        
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    status.style.display = 'none';
+                }, 3000);
+            }
+        }
+        
+        function showSheetStatus(message, type) {
+            const status = document.getElementById('sheet-status');
+            status.textContent = message;
+            status.className = `sheet-status ${type}`;
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    status.style.display = 'none';
+                }, 3000);
+            }
+        }
+        
+        function saveSettings() {
+            const csvUrl = document.getElementById('csvUrl').value.trim();
+            
+            if (!csvUrl) {
+                showSheetStatus('Please enter a CSV URL', 'error');
+                return;
+            }
+            
+            localStorage.setItem('phillyvoice_csv_url', csvUrl);
+            // Clear any cached tag data to force fresh fetch
+            localStorage.removeItem('phillyvoice_tag_cache');
+            localStorage.removeItem('phillyvoice_tag_cache_time');
+            
+            showSheetStatus('CSV URL saved! Tag cache cleared - will fetch fresh data on next use.', 'success');
+        }
+        
+        async function testSheet() {
+            const csvUrl = document.getElementById('csvUrl').value.trim();
+            
+            if (!csvUrl) {
+                showSheetStatus('Please enter a CSV URL first', 'error');
+                return;
+            }
+            
+            showSheetStatus('Testing connection...', 'success');
+            
+            try {
+                // Use CORS proxy with cache busting
+                const corsProxy = 'https://corsproxy.io/?';
+                const cacheBuster = '&_=' + Date.now();
+                const response = await fetch(corsProxy + encodeURIComponent(csvUrl + cacheBuster));
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch CSV');
+                }
+                
+                const csvText = await response.text();
+                const rows = parseCSV(csvText);
+                
+                if (rows.length < 2) {
+                    throw new Error('CSV appears empty or invalid');
+                }
+                
+                showSheetStatus(`✓ Connection successful! Found ${rows.length - 1} tag entries.`, 'success');
+                
+            } catch (error) {
+                showSheetStatus('✗ Connection failed: ' + error.message, 'error');
+            }
+        }
+        
+        function parseCSV(csvText) {
+            const lines = csvText.trim().split('\n');
+            return lines.map(line => {
+                // Simple CSV parsing (handles basic cases)
+                const values = [];
+                let current = '';
+                let inQuotes = false;
+                
+                for (let i = 0; i < line.length; i++) {
+                    const char = line[i];
+                    
+                    if (char === '"') {
+                        inQuotes = !inQuotes;
+                    } else if (char === ',' && !inQuotes) {
+                        values.push(current.trim());
+                        current = '';
+                    } else {
+                        current += char;
+                    }
+                }
+                values.push(current.trim());
+                
+                return values;
+            });
+        }
+        
+        async function loadTagData() {
+            const csvUrl = localStorage.getItem('phillyvoice_csv_url');
+            
+            if (!csvUrl) {
+                return []; // No URL configured, skip tag linking
+            }
+            
+            try {
+                // Use CORS proxy with cache busting to always get fresh data
+                const corsProxy = 'https://corsproxy.io/?';
+                const cacheBuster = '&_=' + Date.now();
+                const response = await fetch(corsProxy + encodeURIComponent(csvUrl + cacheBuster));
+                
+                if (!response.ok) {
+                    console.error('Failed to fetch tag data');
+                    return [];
+                }
+                
+                const csvText = await response.text();
+                const rows = parseCSV(csvText);
+                
+                // Skip header row, parse data
+                const tags = [];
+                for (let i = 1; i < rows.length; i++) {
+                    const row = rows[i];
+                    if (row.length >= 2 && row[0] && row[1]) {
+                        // Case sensitive by default (blank or anything except "no")
+                        const caseSensitiveValue = (row[2] || '').trim().toLowerCase();
+                        const caseSensitive = caseSensitiveValue !== 'no';
+                        
+                        tags.push({
+                            name: row[0].trim(),
+                            url: row[1].trim(),
+                            caseSensitive: caseSensitive
+                        });
+                    }
+                }
+                
+                return tags;
+                
+            } catch (error) {
+                console.error('Error loading tag data:', error);
+                return [];
+            }
+        }
+        
+        function addTagLinks(html, tags) {
+            if (!tags || tags.length === 0) {
+                return html;
+            }
+            
+            // Sort tags by length (longest first) for overlap detection
+            const sortedTags = [...tags].sort((a, b) => b.name.length - a.name.length);
+            
+            // Parse HTML to work with text nodes
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            // Track links added
+            let linksAdded = 0;
+            const maxLinks = 7;
+            const linkedTags = new Set();
+            
+            // Get first paragraph to identify text to skip
+            const firstP = doc.querySelector('p');
+            let skipText = '';
+            if (firstP && firstP.textContent) {
+                const fullText = firstP.textContent.trim();
+                // Check if any tag name appears at the start
+                for (const tag of sortedTags) {
+                    if (fullText.startsWith(tag.name)) {
+                        skipText = tag.name;
+                        break;
+                    }
+                }
+            }
+            
+            // Function to check if we should try to match at this text node
+            function shouldSkipNode(node) {
+                if (linksAdded >= maxLinks) return true;
+                
+                // Skip if inside a link
+                let parent = node.parentElement;
+                while (parent) {
+                    if (parent.tagName === 'A') return true;
+                    parent = parent.parentElement;
+                }
+                
+                // Skip if this is the first text and matches our skip text
+                if (skipText && node === firstP.firstChild && node.textContent.trim().startsWith(skipText)) {
+                    return true;
+                }
+                
+                return false;
+            }
+            
+            // Function to try matching tags at a specific position in a text node
+            function tryMatchAtPosition(node, text, position) {
+                if (linksAdded >= maxLinks) return false;
+                
+                // Try tags longest-first at this position (handles overlaps)
+                for (const tag of sortedTags) {
+                    // CRITICAL: Check if we've already linked this tag
+                    if (linkedTags.has(tag.name)) continue;
+                    
+                    const searchText = tag.caseSensitive ? text : text.toLowerCase();
+                    const searchTag = tag.caseSensitive ? tag.name : tag.name.toLowerCase();
+                    
+                    // Check if tag matches at this exact position
+                    const substring = searchText.substring(position, position + tag.name.length);
+                    if (substring === searchTag) {
+                        // Double-check we haven't linked this tag already
+                        if (linkedTags.has(tag.name)) continue;
+                        
+                        // Found a match! Create link
+                        const before = text.substring(0, position);
+                        const match = text.substring(position, position + tag.name.length);
+                        const after = text.substring(position + tag.name.length);
+                        
+                        const beforeNode = document.createTextNode(before);
+                        const link = document.createElement('a');
+                        link.href = tag.url;
+                        link.textContent = match;
+                        const afterNode = document.createTextNode(after);
+                        
+                        const parent = node.parentElement;
+                        parent.insertBefore(beforeNode, node);
+                        parent.insertBefore(link, node);
+                        parent.insertBefore(afterNode, node);
+                        parent.removeChild(node);
+                        
+                        linksAdded++;
+                        linkedTags.add(tag.name);
+                        
+                        // Continue processing the after text if we haven't hit max
+                        if (linksAdded < maxLinks && after.trim()) {
+                            processTextNode(afterNode);
+                        }
+                        
+                        return true;
+                    }
+                }
+                return false;
+            }
+            
+            // Process a single text node
+            function processTextNode(node) {
+                if (shouldSkipNode(node)) return;
+                
+                const text = node.textContent;
+                
+                // Try matching at each position in the text (left to right)
+                for (let i = 0; i < text.length; i++) {
+                    if (tryMatchAtPosition(node, text, i)) {
+                        return; // Match found and processed
+                    }
+                }
+            }
+            
+            // Walk through all text nodes in document order
+            const walker = document.createTreeWalker(
+                doc.body,
+                NodeFilter.SHOW_TEXT,
+                null,
+                false
+            );
+            
+            const textNodes = [];
+            let node;
+            while (node = walker.nextNode()) {
+                if (node.textContent.trim()) {
+                    textNodes.push(node);
+                }
+            }
+            
+            // Process text nodes in order (this maintains article order)
+            for (const textNode of textNodes) {
+                if (linksAdded >= maxLinks) break;
+                processTextNode(textNode);
+            }
+            
+            return doc.body.innerHTML;
+        }
+
+        async function cleanHTML() {
+            const input = document.getElementById('input').value;
+            
+            if (!input.trim()) {
+                showStatus('Please paste HTML code to clean', 'error');
+                return;
+            }
+            
+            try {
+                // Load tag data
+                const tags = await loadTagData();
+                
+                let cleaned = input;
+                
+                // Step 1: Identify and protect embed blocks
+                const embedPatterns = [
+                    /<blockquote[^>]*class="instagram-media"[^>]*>[\s\S]*?<\/blockquote>/gi,
+                    /<div[^>]*class="embed-placeholder halloembed"[^>]*>[\s\S]*?<\/div>/gi,
+                    /<iframe[^>]*>[\s\S]*?<\/iframe>/gi,
+                    /<blockquote[^>]*class="twitter-tweet"[^>]*>[\s\S]*?<\/blockquote>/gi,
+                    /<blockquote[^>]*class="tiktok-embed"[^>]*>[\s\S]*?<\/blockquote>/gi
+                ];
+                
+                const protectedBlocks = [];
+                const placeholder = '___PROTECTED_BLOCK_';
+                
+                embedPatterns.forEach(pattern => {
+                    cleaned = cleaned.replace(pattern, (match) => {
+                        const index = protectedBlocks.length;
+                        protectedBlocks.push(match);
+                        return `${placeholder}${index}___`;
+                    });
+                });
+                
+                // Step 2: Remove all <span> tags (keep content)
+                cleaned = cleaned.replace(/<span[^>]*>/gi, '');
+                cleaned = cleaned.replace(/<\/span>/gi, '');
+                
+                // Step 3: Fix related link packages
+                // Pattern: <hr>...<150 chars with <a> tag...<hr>
+                // Ensure content is wrapped in <p>...</p>
+                cleaned = cleaned.replace(
+                    /<hr>([\s\S]{1,150}?<a[^>]*>[\s\S]*?<\/a>[\s\S]{0,150}?)<hr>/gi,
+                    function(match, content) {
+                        // Remove any div tags in this section
+                        content = content.replace(/<\/?div[^>]*>/gi, '');
+                        
+                        // Check if already wrapped in <p> tags
+                        if (content.trim().startsWith('<p>') && content.trim().endsWith('</p>')) {
+                            return '<hr>' + content + '<hr>';
+                        }
+                        
+                        // Remove existing partial <p> tags if present
+                        content = content.replace(/^<p>/i, '').replace(/<\/p>$/i, '');
+                        
+                        // Wrap in <p> tags
+                        return '<hr><p>' + content.trim() + '</p><hr>';
+                    }
+                );
+                
+                // Step 4: Remove standalone <div> tags with no attributes (not in embeds)
+                // This is a basic implementation - will be refined as we see more examples
+                cleaned = cleaned.replace(/<div>\s*/gi, '');
+                cleaned = cleaned.replace(/\s*<\/div>/gi, '');
+                
+                // Step 5: Extract images from containing block elements
+                // Pattern: <p>...<img...>...</p> → <p>...</p> <img...> <p>...</p>
+                cleaned = cleaned.replace(
+                    /<p>([^<]*)<img([^>]*)>([^<]*)<\/p>/gi,
+                    function(match, before, imgAttrs, after) {
+                        let result = '';
+                        if (before.trim()) result += `<p>${before.trim()}</p> `;
+                        result += `<img${imgAttrs}>`;
+                        if (after.trim()) result += ` <p>${after.trim()}</p>`;
+                        return result;
+                    }
+                );
+                
+                // Pattern: <p><img...></p> → <img...>
+                cleaned = cleaned.replace(/<p>\s*<img([^>]*)>\s*<\/p>/gi, '<img$1>');
+                
+                // Pattern: <p><span><img...><br></span></p> → <img...>
+                cleaned = cleaned.replace(/<p>\s*<img([^>]*)>\s*<br>\s*<\/p>/gi, '<img$1>');
+                
+                // Pattern: <h3>...<img...></h3> → <h3>...</h3> <img...>
+                cleaned = cleaned.replace(
+                    /<h3>([^<]*)<img([^>]*)><\/h3>/gi,
+                    '<h3>$1</h3> <img$2>'
+                );
+                
+                // Step 6: Remove <br> after images
+                cleaned = cleaned.replace(/(<img[^>]*>)\s*<br\s*\/?>/gi, '$1');
+                
+                // Step 7: Remove empty <p> tags
+                cleaned = cleaned.replace(/<p>\s*<\/p>/gi, '');
+                
+                // Step 8: Remove <p> tags containing only <br>
+                cleaned = cleaned.replace(/<p>\s*<br\s*\/?>\s*<\/p>/gi, '');
+                
+                // Step 9: Remove specific inline styles from <a> tags
+                const stylesToRemove = [
+                    'style="font-size: 1.2em;"',
+                    'style="font-family: inherit; font-size: 1.2em;"',
+                    'style="font-size: 15.36px;"'
+                ];
+                
+                stylesToRemove.forEach(style => {
+                    const regex = new RegExp(style.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+                    cleaned = cleaned.replace(regex, '');
+                });
+                
+                // Step 10: Convert smart/curly quotes to straight quotes
+                // Curly double quotes
+                cleaned = cleaned.replace(/[\u201C\u201D]/g, '"');
+                // Curly single quotes/apostrophes
+                cleaned = cleaned.replace(/[\u2018\u2019]/g, "'");
+                
+                // Step 11: Normalize em dash spacing (multiple spaces to single space)
+                // Pattern: multiple spaces around em dash → single space
+                cleaned = cleaned.replace(/\s{2,}–\s{2,}/g, ' – ');
+                cleaned = cleaned.replace(/\s{2,}–/g, ' –');
+                cleaned = cleaned.replace(/–\s{2,}/g, '– ');
+                
+                // Step 12: Restore protected embed blocks
+                protectedBlocks.forEach((block, index) => {
+                    cleaned = cleaned.replace(`${placeholder}${index}___`, block);
+                });
+                
+                // Step 13: Clean up excessive whitespace (but preserve intentional structure)
+                // Remove multiple consecutive blank lines (keep max 1 blank line)
+                cleaned = cleaned.replace(/\n\s*\n\s*\n/g, '\n\n');
+                
+                // Step 14: Add tag links (if configured)
+                if (tags.length > 0) {
+                    cleaned = addTagLinks(cleaned, tags);
+                }
+                
+                document.getElementById('output').value = cleaned;
+                
+                const message = tags.length > 0 
+                    ? `HTML cleaned successfully! Tag linking enabled (${tags.length} tags loaded).`
+                    : 'HTML cleaned successfully! (Tag linking not configured)';
+                showStatus(message, 'success');
+                
+            } catch (error) {
+                showStatus('Error cleaning HTML: ' + error.message, 'error');
+                console.error(error);
+            }
+        }
+
+        function copyToClipboard() {
+            const output = document.getElementById('output');
+            
+            if (!output.value.trim()) {
+                showStatus('Nothing to copy - please clean HTML first', 'error');
+                return;
+            }
+            
+            output.select();
+            document.execCommand('copy');
+            showStatus('Cleaned HTML copied to clipboard!', 'success');
+        }
+
+        function clearAll() {
+            document.getElementById('input').value = '';
+            document.getElementById('output').value = '';
+            document.getElementById('status').style.display = 'none';
+        }
+
+        // Auto-save input to localStorage
+        const inputField = document.getElementById('input');
+        inputField.addEventListener('input', () => {
+            localStorage.setItem('phillyvoice_html_input', inputField.value);
+        });
+
+        // Restore saved input and CSV URL on load
+        window.addEventListener('load', () => {
+            const savedInput = localStorage.getItem('phillyvoice_html_input');
+            if (savedInput) {
+                inputField.value = savedInput;
+            }
+            
+            const savedCsvUrl = localStorage.getItem('phillyvoice_csv_url');
+            if (savedCsvUrl) {
+                document.getElementById('csvUrl').value = savedCsvUrl;
+            }
+        });
+    </script>
+</body>
+</html>
